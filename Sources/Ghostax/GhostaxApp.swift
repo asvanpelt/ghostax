@@ -15,6 +15,7 @@ struct GhostaxApp: App {
         WindowGroup(id: "project-window", for: String.self) { $projectPath in
             AppShellView(initialProjectPath: projectPath)
                 .frame(minWidth: 360, minHeight: 600)
+                .background(NewWindowBridge(appDelegate: appDelegate))
         }
         .windowStyle(.hiddenTitleBar)
         .commands {
@@ -38,6 +39,7 @@ struct GhostaxCommands: Commands {
 
 final class GhostaxApplicationDelegate: NSObject, NSApplicationDelegate {
     private var keyMonitor: Any?
+    var openNewWindow: (() -> Void)?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard let application = notification.object as? NSApplication else { return }
@@ -53,7 +55,7 @@ final class GhostaxApplicationDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func installGlobalAppShortcuts() {
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
 
             if flags == .command {
@@ -68,6 +70,9 @@ final class GhostaxApplicationDelegate: NSObject, NSApplicationDelegate {
                     return nil
                 case 13:
                     NotificationCenter.default.post(name: .ghostaxClosePane, object: nil)
+                    return nil
+                case 45: // Cmd+N
+                    self?.openNewWindow?()
                     return nil
                 default:
                     return event
@@ -86,5 +91,19 @@ final class GhostaxApplicationDelegate: NSObject, NSApplicationDelegate {
 
             return event
         }
+    }
+}
+
+private struct NewWindowBridge: View {
+    let appDelegate: GhostaxApplicationDelegate
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Color.clear
+            .onAppear {
+                appDelegate.openNewWindow = { [openWindow] in
+                    openWindow(id: "project-window")
+                }
+            }
     }
 }

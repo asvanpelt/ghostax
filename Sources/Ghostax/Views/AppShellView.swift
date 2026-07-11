@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AppShellView: View {
     @StateObject private var appState = AppState()
+    @Environment(\.controlActiveState) private var controlActiveState
     var initialProjectPath: String? = nil
 
     var body: some View {
@@ -25,12 +26,15 @@ struct AppShellView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .environmentObject(appState)
         .onReceive(NotificationCenter.default.publisher(for: .ghostaxClosePane)) { _ in
+            guard controlActiveState == .key else { return }
             appState.closePaneOrWindow()
         }
         .onReceive(NotificationCenter.default.publisher(for: .ghostaxSplitVertical)) { _ in
+            guard controlActiveState == .key else { return }
             appState.splitActivePane(axis: .vertical)
         }
         .onReceive(NotificationCenter.default.publisher(for: .ghostaxSplitHorizontal)) { _ in
+            guard controlActiveState == .key else { return }
             appState.splitActivePane(axis: .horizontal)
         }
         .task {
