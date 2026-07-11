@@ -180,6 +180,15 @@ final class AppState: ObservableObject {
         saveWorkspaceLayout()
     }
 
+    func closePaneOrWindow() {
+        guard let tabIndex = activeTabIndex else { return }
+        if tabs[tabIndex].panes.count <= 1 {
+            NSApplication.shared.keyWindow?.performClose(nil)
+        } else {
+            closeActivePane()
+        }
+    }
+
     func closeActivePane() {
         guard let tabIndex = activeTabIndex else { return }
         let activePaneID = tabs[tabIndex].activePaneID

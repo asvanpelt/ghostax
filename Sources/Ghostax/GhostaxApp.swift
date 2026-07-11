@@ -3,6 +3,9 @@ import SwiftUI
 
 extension Notification.Name {
     static let ghostaxOpenNewWindow = Notification.Name("ghostaxOpenNewWindow")
+    static let ghostaxClosePane = Notification.Name("ghostaxClosePane")
+    static let ghostaxSplitVertical = Notification.Name("ghostaxSplitVertical")
+    static let ghostaxSplitHorizontal = Notification.Name("ghostaxSplitHorizontal")
 }
 
 @main
@@ -54,25 +57,39 @@ final class GhostaxApplicationDelegate: NSObject, NSApplicationDelegate {
     private func installGlobalAppShortcuts() {
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            guard flags == .command else { return event }
 
-            switch event.keyCode {
-            case 12:
-                Task { @MainActor in
-                    NSApplication.shared.terminate(nil)
+            if flags == .command {
+                switch event.keyCode {
+                case 2: // Cmd+D
+                    NotificationCenter.default.post(name: .ghostaxSplitVertical, object: nil)
+                    return nil
+                case 12:
+                    Task { @MainActor in
+                        NSApplication.shared.terminate(nil)
+                    }
+                    return nil
+                case 13:
+                    NotificationCenter.default.post(name: .ghostaxClosePane, object: nil)
+                    return nil
+                case 45:
+                    NotificationCenter.default.post(name: .ghostaxOpenNewWindow, object: nil)
+                    return nil
+                default:
+                    return event
                 }
-                return nil
-            case 13:
-                Task { @MainActor in
-                    NSApplication.shared.keyWindow?.performClose(nil)
-                }
-                return nil
-            case 45:
-                NotificationCenter.default.post(name: .ghostaxOpenNewWindow, object: nil)
-                return nil
-            default:
-                return event
             }
+
+            if flags == [.command, .shift] {
+                switch event.keyCode {
+                case 2: // Cmd+Shift+D
+                    NotificationCenter.default.post(name: .ghostaxSplitHorizontal, object: nil)
+                    return nil
+                default:
+                    return event
+                }
+            }
+
+            return event
         }
     }
 }

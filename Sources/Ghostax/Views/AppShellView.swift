@@ -24,6 +24,15 @@ struct AppShellView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .environmentObject(appState)
+        .onReceive(NotificationCenter.default.publisher(for: .ghostaxClosePane)) { _ in
+            appState.closePaneOrWindow()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .ghostaxSplitVertical)) { _ in
+            appState.splitActivePane(axis: .vertical)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .ghostaxSplitHorizontal)) { _ in
+            appState.splitActivePane(axis: .horizontal)
+        }
         .task {
             if let initialProjectPath, appState.workspace == nil {
                 appState.setWorkspace(URL(fileURLWithPath: initialProjectPath))
