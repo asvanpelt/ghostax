@@ -14,7 +14,7 @@ final class AppState: ObservableObject {
     @Published var selectedGitFile: GitChangedFile?
     @Published var selectedGitDiff: String = ""
     @Published var isLoadingGit = false
-    @Published var windowAccent: WindowAccent = .blue
+    @Published var windowAccent: WindowAccent = .preset(.blue)
     @Published private var terminalStates: [TerminalPane.ID: TerminalViewState] = [:]
 
     private let gitService = GitService()

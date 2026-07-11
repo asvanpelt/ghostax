@@ -100,24 +100,7 @@ private struct ProjectWindowHeader: View {
         .foregroundStyle(.white)
         .background(appState.windowAccent.color)
         .contextMenu {
-            ForEach(WindowAccent.allCases) { accent in
-                Button {
-                    appState.setWindowAccent(accent)
-                } label: {
-                    HStack {
-                        Image(systemName: appState.windowAccent == accent ? "checkmark.circle.fill" : "circle.fill")
-                        Text(accent.rawValue.capitalized)
-                    }
-                }
-            }
-
-            Divider()
-
-            Button("Default") {
-                if let path = appState.workspace?.url.path {
-                    appState.setWindowAccent(WindowAccent.stableColor(for: path))
-                }
-            }
+            AccentColorMenu()
         }
     }
 }

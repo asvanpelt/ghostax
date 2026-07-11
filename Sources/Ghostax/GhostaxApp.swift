@@ -2,7 +2,6 @@ import AppKit
 import SwiftUI
 
 extension Notification.Name {
-    static let ghostaxOpenNewWindow = Notification.Name("ghostaxOpenNewWindow")
     static let ghostaxClosePane = Notification.Name("ghostaxClosePane")
     static let ghostaxSplitVertical = Notification.Name("ghostaxSplitVertical")
     static let ghostaxSplitHorizontal = Notification.Name("ghostaxSplitHorizontal")
@@ -15,8 +14,7 @@ struct GhostaxApp: App {
     var body: some Scene {
         WindowGroup(id: "project-window", for: String.self) { $projectPath in
             AppShellView(initialProjectPath: projectPath)
-                .frame(minWidth: 360, minHeight: 420)
-                .background(NewWindowShortcutBridge())
+                .frame(minWidth: 360, minHeight: 600)
         }
         .windowStyle(.hiddenTitleBar)
         .commands {
@@ -71,9 +69,6 @@ final class GhostaxApplicationDelegate: NSObject, NSApplicationDelegate {
                 case 13:
                     NotificationCenter.default.post(name: .ghostaxClosePane, object: nil)
                     return nil
-                case 45:
-                    NotificationCenter.default.post(name: .ghostaxOpenNewWindow, object: nil)
-                    return nil
                 default:
                     return event
                 }
@@ -91,16 +86,5 @@ final class GhostaxApplicationDelegate: NSObject, NSApplicationDelegate {
 
             return event
         }
-    }
-}
-
-private struct NewWindowShortcutBridge: View {
-    @Environment(\.openWindow) private var openWindow
-
-    var body: some View {
-        Color.clear
-            .onReceive(NotificationCenter.default.publisher(for: .ghostaxOpenNewWindow)) { _ in
-                openWindow(id: "project-window")
-            }
     }
 }

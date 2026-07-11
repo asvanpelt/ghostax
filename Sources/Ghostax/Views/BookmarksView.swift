@@ -142,30 +142,7 @@ struct BookmarksView: View {
                     }
                 }
                 Menu("Color") {
-                    let current = WorkspaceLayoutStore.accent(for: item.path)
-                    ForEach(WindowAccent.allCases) { accent in
-                        Button {
-                            WorkspaceLayoutStore.setAccent(accent, path: item.path)
-                            if appState.workspace?.url.standardizedFileURL.path == URL(fileURLWithPath: item.path).standardizedFileURL.path {
-                                appState.setWindowAccent(accent)
-                            }
-                        } label: {
-                            HStack {
-                                if current == accent {
-                                    Image(systemName: "checkmark")
-                                }
-                                Text(accent.rawValue.capitalized)
-                            }
-                        }
-                    }
-                    Divider()
-                    Button("Default") {
-                        let defaultAccent = WindowAccent.stableColor(for: item.path)
-                        WorkspaceLayoutStore.setAccent(defaultAccent, path: item.path)
-                        if appState.workspace?.url.standardizedFileURL.path == URL(fileURLWithPath: item.path).standardizedFileURL.path {
-                            appState.setWindowAccent(defaultAccent)
-                        }
-                    }
+                    BookmarkAccentMenu(item: item)
                 }
                 Divider()
                 Button("Remove") {
