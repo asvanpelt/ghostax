@@ -2,7 +2,7 @@
 
 Native macOS terminal workspace built with SwiftUI and [Ghostty](https://ghostty.org) (via [libghostty-spm](https://github.com/Lakr233/libghostty-spm)).
 
-Ghostax started as a ground-up reimagining of the workflows I had in my modified version of [Terax](https://terax.app), but without reusing any of its code. The initial scaffold was generated with Codex; the rest has been shaped interactively with Claude Code.
+Ghostax started as a ground-up reimagining of the workflows I had in my modified version of [Terax](https://github.com/asvanpelt/terax-ai), but without reusing any of its code. The initial scaffold was generated with Codex; the rest has been shaped interactively with Claude Code.
 
 ## What it does
 
